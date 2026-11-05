@@ -64,6 +64,10 @@ DEVICES = {
         # FDT on 2026-10-19 (tools/fdt-audit.py; see GUACAMOLE.md).
         'name': 'OnePlus 7 Pro (guacamole, SM8150)',
         'board_compat': 'oneplus,guacamole',
+        # The SWEET kernel's device-tree platform expert matches IONameMatch
+        # 'xiaomi,sweet' (ios-sweet 0016); without it IOKit panics with
+        # "Unable to find driver for this platform: D22AP".
+        'extra_compat': ('xiaomi,sweet',),
         'soc_compat': 'qcom,sm8150',
         # SM8150 DDR (audited on the GM1910's live FDT 2026-10-19): three
         # banks - 0x80000000+0x3bb00000, 0xc0000000+0xc0000000 and
@@ -94,6 +98,8 @@ DEVICES = {
         'ufs_size': 0x3000,
         # Kryo 485: 4x A55 (silver) + 3x A76 (gold) + 1x A76 (prime).
         'cpu_compat': 'qcom,kryo485',
+        # ...and its SweetCPU matches 'qcom,kryo470' (ios-sweet 0018).
+        'extra_cpu_compat': ('qcom,kryo470',),
         'cpus': 8,
         'cpu_regs': [0, 0x100, 0x200, 0x300, 0x400, 0x500, 0x600, 0x700],  # confirmed (live FDT)
         'cpu_clocks': [1785600000] * 4 + [2419200000] * 3 + [2841600000],   # verify: opp tables

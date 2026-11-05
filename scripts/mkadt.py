@@ -129,7 +129,7 @@ def build(seed=None, qemu=False, highmem=False, device='sweet', dram_size=None, 
         cpu_nodes.append(node(f'cpu{core}', [
             ph(),
             ('device_type', cstr('cpu')),
-            ('compatible', cstr(dev['cpu_compat']) + cstr('ARM,v8')),
+            ('compatible', cstr(dev['cpu_compat']) + b''.join(cstr(c) for c in dev.get('extra_cpu_compat', ())) + cstr('ARM,v8')),
             ('reg', u32(dev['cpu_regs'][core])),  # actual MPIDR Aff1:Aff0, NOT logical ID
             ('cpu-id', u32(core)),   # descriptive: XNU assigns IDs by DT order
             ('cluster-id', u32(0)),  # descriptive; see ml_parse_cpu_topology
@@ -219,7 +219,7 @@ def build(seed=None, qemu=False, highmem=False, device='sweet', dram_size=None, 
     # SweetPlatformExpert matching and for the live FDT audits.
     return node('device-tree', [
         ph(),
-        ('compatible', cstr('D22AP') + cstr('iPhone10,3') + cstr(dev['board_compat']) + cstr(dev['soc_compat']) + cstr('AppleARM')),
+        ('compatible', cstr('D22AP') + cstr('iPhone10,3') + cstr(dev['board_compat']) + b''.join(cstr(c) for c in dev.get('extra_compat', ())) + cstr(dev['soc_compat']) + cstr('AppleARM')),
         ('model', cstr('iPhone10,3')),
         ('target-type', cstr('D22')),
         ('target-sub-type', cstr('D22AP')),
