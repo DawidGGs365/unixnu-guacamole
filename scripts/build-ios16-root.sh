@@ -10,11 +10,12 @@
 set -euo pipefail
 here=$(cd "$(dirname "$0")" && pwd)
 ipsw=$(realpath "$1") out=$(realpath -m "$2") size=${3:-16G}
-mkiosroot=${MKIOSROOT:-$here/../../ios-sweet/tools/mkiosroot.sh}
+mkiosroot=${MKIOSROOT:-$here/mkiosroot-guac.sh}
 [[ -x $mkiosroot ]] || { echo "missing $mkiosroot" >&2; exit 1; }
 mkdir -p "$out/dmg"
 img=$out/ios16-root-20H392.img
-[[ ! -e $img ]] || { echo "refusing to overwrite $img" >&2; exit 1; }
+if [[ -e $img && ${RESUME:-0} != 1 ]]; then echo "refusing to overwrite $img (RESUME=1 continues into it)" >&2; exit 1; fi
+export RESUME=${RESUME:-0}
 
 # BuildManifest (d22ap): OS 087-86698-044, SystemOS 087-86593-047, AppOS 087-86715-047
 for d in 087-86698-044.dmg 087-86593-047.dmg 087-86715-047.dmg; do
